@@ -6,7 +6,6 @@ import 'package:mqtt_client/mqtt_server_client.dart';
 
 void main() {
   runApp(const MyApp());
-
 }
 
 class MyApp extends StatelessWidget {
@@ -61,14 +60,15 @@ class _MyHomePageState extends State<MyHomePage> {
     // });
   }
 
-  
-
   mqttSubscribe(String topic) {
     client?.subscribe('topic', MqttQos.exactlyOnce);
     return client?.updates;
   }
 
-  
+  publish(String message) {
+    final builder = MqttClientPayloadBuilder();
+    builder.addString('Hello');
+  }
 
   void onConnected() {
     log('Connected');
@@ -79,8 +79,9 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   @override
-  _MyHomePageState() {
+  void initState() {
     super.initState();
+
     mqttConnect();
   }
 
@@ -108,12 +109,12 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Widget _publish() {
-    final builder = MqttClientPayloadBuilder();
-    builder.addString('Hello from Mqtt_client');
     return Center(
+      // ignore: deprecated_member_use
       child: RaisedButton(
         onPressed: () {
-          client?.publishMessage('topic', MqttQos.exactlyOnce, builder.payload!);
+          client?.publishMessage(
+              'topic', MqttQos.exactlyOnce, builder.payload!);
         },
         child: const Text('publish'),
         color: Colors.lightBlue,
